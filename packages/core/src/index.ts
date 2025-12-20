@@ -1,4 +1,4 @@
-import { linkedinHandler, unknownHandler, youtubeHandler } from "./platforms";
+import { instagramHandler, linkedinHandler, unknownHandler, youtubeHandler } from "./platforms";
 import { DeepLinkResult } from "./types";
 
 export * from './types';
@@ -6,6 +6,7 @@ export * from './types';
 const handlers = [
   youtubeHandler,
   linkedinHandler,
+  instagramHandler
 ];
 export function generateDeepLink(url: string): DeepLinkResult {
   const webUrl = url.trim();
@@ -24,17 +25,17 @@ export function detectOS(): 'ios' | 'android' | 'desktop' {
   if (typeof window === 'undefined') {
     return 'desktop';
   }
-  
+
   const userAgent = window.navigator.userAgent.toLowerCase();
-  
+
   if (/iphone|ipad|ipod/.test(userAgent)) {
     return 'ios';
   }
-  
+
   if (/android/.test(userAgent)) {
     return 'android';
   }
-  
+
   return 'desktop';
 }
 
@@ -50,21 +51,21 @@ export function openLink(url: string, options: OpenLinkOptions = {}): void {
     fallbackDelay = 2500,
     openInNewTab = false
   } = options;
-  
+
   const os = detectOS();
   const result = generateDeepLink(url);
-  
+
   let deepLink: string | null = null;
-  
+
   if (os === 'ios' && result.ios) {
     deepLink = result.ios;
   } else if (os === 'android' && result.android) {
     deepLink = result.android;
   }
-  
+
   if (deepLink && (os === 'ios' || os === 'android')) {
     window.location.href = deepLink;
-    
+
     if (fallbackToWeb) {
       setTimeout(() => {
         if (openInNewTab) {
