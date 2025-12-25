@@ -12,51 +12,42 @@ const patterns: Array<[type: string, regex: RegExp]> = [
   ['job', /linkedin\.com\/jobs\/view\/([^/?#]+)/],
 ]
 
+
+const getUrlWithoutProtocol = (url: string) => url.replace(/^https?:\/\//, '')
+
 /**
  * Helper to assemble a valid deeplink result object
  */
 const buildResult = (
   webUrl: string,
-  ios: string | null,
-  android: string | null
-): DeepLinkResult => ({
-  webUrl,
-  ios,
-  android,
-  platform: 'linkedin',
-})
+  ios: string | null
+): DeepLinkResult => {
+  const urlWithoutProtocol = getUrlWithoutProtocol(webUrl)
+
+  return {
+    webUrl,
+    ios,
+    android: `intent://${urlWithoutProtocol}#Intent;scheme=https;package=com.linkedin.android;S.browser_fallback_url=${webUrl};end`,
+    platform: 'linkedin'
+  }
+}
+
 
 /**
  * Maps each recognized link type to its deeplink URL formats
  */
 const builders: Record<string, (id: string, webUrl: string) => DeepLinkResult> = {
   profile: (id, webUrl) =>
-    buildResult(
-      webUrl,
-      `linkedin://in/${id}`,
-      `intent://in/${id}#Intent;scheme=linkedin;package=com.linkedin.android;end`
-    ),
+    buildResult(webUrl, `linkedin://in/${id}`),
 
   post: (id, webUrl) =>
-    buildResult(
-      webUrl,
-      `linkedin://urn:li:activity:${id}`,
-      `intent://urn:li:activity:${id}#Intent;scheme=linkedin;package=com.linkedin.android;end`
-    ),
+    buildResult(webUrl, `linkedin://urn:li:activity:${id}`),
 
   company: (id, webUrl) =>
-    buildResult(
-      webUrl,
-      `linkedin://company/${id}`,
-      `intent://company/${id}#Intent;scheme=linkedin;package=com.linkedin.android;end`
-    ),
+    buildResult(webUrl, `linkedin://company/${id}`),
 
   job: (id, webUrl) =>
-    buildResult(
-      webUrl,
-      `linkedin://job/${id}`,
-      `intent://job/${id}#Intent;scheme=linkedin;package=com.linkedin.android;end`
-    ),
+    buildResult(webUrl, `linkedin://job/${id}`)
 }
 
 /**
@@ -75,10 +66,9 @@ export const linkedinHandler: DeepLinkHandler = {
   build: (webUrl, match) => {
     const type = match[1]
     const id = match[2]
-
     const builder = builders[type]
     return builder
       ? builder(id, webUrl)
-      : buildResult(webUrl, null, null)
-  },
+      : buildResult(webUrl, null)
+  }
 }
