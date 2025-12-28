@@ -21,7 +21,7 @@ function displayResult(result: ReturnType<typeof generateDeepLink>) {
   outputSection.classList.remove('hidden');
 }
 
-function getLinkDetails(link: HTMLAnchorElement, e: PointerEvent) {
+function getLinkDetails(link: HTMLAnchorElement, e: MouseEvent) {
   e.preventDefault();
   const isModifierPressed = e.ctrlKey || e.metaKey || e.button === 1;
   const url = link.getAttribute('data-url');
