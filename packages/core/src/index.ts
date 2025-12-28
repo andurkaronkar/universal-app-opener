@@ -1,5 +1,13 @@
-import { threadsHandler, instagramHandler, linkedinHandler, unknownHandler, youtubeHandler, spotifyHandler  } from "./platforms";
-import { DeepLinkResult } from "./types";
+import {
+  threadsHandler,
+  instagramHandler,
+  linkedinHandler,
+  unknownHandler,
+  youtubeHandler,
+  facebookHandler,
+  spotifyHandler,
+} from './platforms';
+import { DeepLinkResult } from './types';
 
 export * from './types';
 
@@ -7,6 +15,7 @@ const handlers = [
   youtubeHandler,
   linkedinHandler,
   instagramHandler,
+  facebookHandler,
   spotifyHandler,
   threadsHandler
 ];
