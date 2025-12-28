@@ -106,7 +106,7 @@ interface DeepLinkResult {
 }
 ```
 
-**Supported Platforms:**
+### Supported Platforms
 
 #### YouTube
 
